@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Tech | Hardware & Redes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- Paleta de Colores --- */
+        /* Principal: #007bff (Azul Vívido) */
+        /* Secundario: #28a745 (Verde Éxito) */
+        /* Fondo: #f0f4f8 (Gris Claro Suave) */
+        
+        /* --- Base y Tipografía --- */
+        body {
+            font-family: 'Poppins', sans-serif; /* Fuente moderna */
+            background-color: #f0f4f8; 
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #007bff, #0056b3); /* Degradado atractivo */
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+        }
+
+        /* --- Contenedor Principal y Tarjeta --- */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            flex-grow: 1; 
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            /* Sombra suave (Neumorfismo Suave) */
+            box-shadow: 8px 8px 15px #e3e6ea, -8px -8px 15px #ffffff; 
+            margin-bottom: 25px;
+        }
+
+        /* --- Input y Botones --- */
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+
+        #nombre-estudiante {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        #nombre-estudiante:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Estilo Base de Botones */
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            margin-top: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background-color: #adb5bd;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .retry-btn {
+            background-color: #6c757d; /* Gris para reintento */
+        }
+        .retry-btn:hover {
+            background-color: #5a6268;
+        }
+
+        /* --- Estilos de Cuestionario --- */
+        .info-bar {
+            background-color: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 1em;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .pregunta {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+        }
+
+        .pregunta p {
+            font-weight: 700;
+            font-size: 1.15em;
+            color: #333333;
+            margin-top: 0;
+            border-bottom: 2px solid #eeeeee;
+            padding-bottom: 10px;
+        }
+
+        .opcion {
+            display: block;
+            margin-bottom: 10px;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            user-select: none;
+        }
+
+        .opcion:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+        }
+
+        .opcion input[type="radio"] {
+            margin-right: 10px;
+            accent-color: #007bff; 
+        }
+
+        /* --- Estilos de Resultados --- */
+        .score-box {
+            background-color: #28a745; /* Verde para el éxito */
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .detalle {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .acertada {
+            background-color: #e6f7ee; 
+            border-left: 5px solid #28a745;
+        }
+
+        .fallida {
+            background-color: #fdeaea; 
+            border-left: 5px solid #dc3545; 
+        }
+
+        .respuesta-correcta {
+            font-weight: 600;
+            color: #28a745;
+            margin-top: 5px;
+            border-top: 1px dashed #ced4da;
+            padding-top: 5px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #343a40; 
+            color: #adb5bd;
+            width: 100%;
+            margin-top: auto; 
+        }
+
+        /* --- Responsividad --- */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            .container {
+                margin: 20px 10px;
+                padding: 10px;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fas fa-microchip"></i> Hardware y Redes 🌐</h1>
+        <p>Evalúa tus conocimientos en el mundo de la informática.</p>
+    </header>
+
+    <main class="container">
+        
+        <section id="inicio-seccion" class="card">
+            <h2>👋 ¡Hola! Comencemos</h2>
+            <p class="description">Para iniciar la prueba de 10 preguntas, por favor ingresa tu nombre.</p>
+            <div class="input-group">
+                <label for="nombre-estudiante"><i class="fas fa-user-circle"></i> Nombre del Estudiante:</label>
+                <input type="text" id="nombre-estudiante" placeholder="Ej. Ada Lovelace" required>
+            </div>
+            <button id="iniciar-btn" disabled><i class="fas fa-play-circle"></i> Iniciar Cuestionario</button>
+        </section>
+
+        <section id="cuestionario-seccion" class="card" style="display: none;">
+            <p id="info-estudiante" class="info-bar"><i class="fas fa-graduation-cap"></i> Cargando...</p>
+            <div id="preguntas-container">
+                </div>
+            <button id="finalizar-btn" style="display: none;"><i class="fas fa-check-circle"></i> Finalizar y Ver Resultados</button>
+        </section>
+
+        <section id="resultados-seccion" class="card" style="display: none;">
+            <h2>Resultados Obtenidos 🏆</h2>
+            <p id="nombre-resultado" class="description"></p>
+            <div id="puntuacion-final" class="score-box"></div>
+            <h3>Detalle por Pregunta:</h3>
+            <div id="respuestas-detalle">
+                </div>
+            <button onclick="location.reload()" class="retry-btn"><i class="fas fa-redo-alt"></i> Intentar de Nuevo</button>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Desarrollado con 💙 por tu experto en programación.</p>
+    </footer>
+
+    <script>
+        // --- BANCO DE PREGUNTAS (15 Preguntas) ---
+        const bancoDePreguntas = [
+            {
+                pregunta: "¿Qué componente se considera el 'cerebro' de la computadora?",
+                opciones: ["Memoria RAM", "Disco Duro (HDD/SSD)", "Tarjeta Gráfica (GPU)", "Unidad Central de Procesamiento (CPU)"],
+                respuestaCorrecta: "Unidad Central de Procesamiento (CPU)"
+            },
+            {
+                pregunta: "¿Cuál es la función principal de la Memoria RAM?",
+                opciones: ["Almacenar permanentemente los archivos del sistema.", "Almacenar temporalmente datos y programas en ejecución.", "Convertir corriente alterna a corriente directa.", "Gestionar la comunicación de la red."],
+                respuestaCorrecta: "Almacenar temporalmente datos y programas en ejecución."
+            },
+            {
+                pregunta: "¿Qué tipo de cable de red se utiliza comúnmente en una red LAN cableada?",
+                opciones: ["Cable de fibra óptica", "Cable coaxial", "Cable UTP (Par Trenzado No Blindado)", "Cable HDMI"],
+                respuestaCorrecta: "Cable UTP (Par Trenzado No Blindado)"
+            },
+            {
+                pregunta: "¿Cuál es el protocolo fundamental que permite la comunicación de datos a través de Internet?",
+                opciones: ["FTP", "HTTP", "TCP/IP", "SMTP"],
+                respuestaCorrecta: "TCP/IP"
+            },
+            {
+                pregunta: "¿Cómo se llama el dispositivo que conecta múltiples segmentos de red y reenvía datos basándose en direcciones MAC?",
+                opciones: ["Router", "Módem", "Switch", "Hub"],
+                respuestaCorrecta: "Switch"
+            },
+            {
+                pregunta: "¿Qué significa el acrónimo ROM en el contexto del hardware?",
+                opciones: ["Random Only Memory", "Read Open Module", "Read Only Memory", "Ready On Machine"],
+                respuestaCorrecta: "Read Only Memory"
+            },
+            {
+                pregunta: "¿En qué capa del modelo OSI opera un Router?",
+                opciones: ["Capa de Enlace de Datos", "Capa Física", "Capa de Red", "Capa de Transporte"],
+                respuestaCorrecta: "Capa de Red"
+            },
+            {
+                pregunta: "¿Cuál es la principal diferencia entre un HDD y un SSD?",
+                opciones: ["El HDD es más rápido y el SSD tiene más capacidad.", "El SSD usa tecnología flash y el HDD usa discos magnéticos.", "El HDD se conecta por USB y el SSD por SATA.", "El SSD es solo para servidores y el HDD para PC."],
+                respuestaCorrecta: "El SSD usa tecnología flash y el HDD usa discos magnéticos."
+            },
+            {
+                pregunta: "¿Cuál es una dirección IP válida de Clase C?",
+                opciones: ["10.0.0.1", "172.16.0.1", "192.168.1.1", "224.0.0.1"],
+                respuestaCorrecta: "192.168.1.1"
+            },
+            {
+                pregunta: "¿Qué dispositivo de hardware es responsable de convertir señales digitales a analógicas (y viceversa) para la conexión a una línea telefónica o de cable?",
+                opciones: ["Switch", "Tarjeta de Red (NIC)", "Módem", "Tarjeta de Sonido"],
+                respuestaCorrecta: "Módem"
+            },
+            {
+                pregunta: "¿Qué unidad de medida se utiliza para especificar la velocidad de un procesador?",
+                opciones: ["Byte", "Hertz (Hz)", "Voltio (V)", "Decibel (dB)"],
+                respuestaCorrecta: "Hertz (Hz)"
+            },
+            {
+                pregunta: "¿Cuál de los siguientes es un ejemplo de un sistema operativo de red (NOS)?",
+                opciones: ["Microsoft Word", "Adobe Photoshop", "Windows Server", "Google Chrome"],
+                respuestaCorrecta: "Windows Server"
+            },
+            {
+                pregunta: "¿Qué conector se utiliza típicamente para conectar un cable UTP a una tarjeta de red?",
+                opciones: ["USB", "RJ-45", "HDMI", "VGA"],
+                respuestaCorrecta: "RJ-45"
+            },
+            {
+                pregunta: "¿Qué parte de la placa base almacena la configuración básica del sistema y se carga antes del sistema operativo?",
+                opciones: ["La CPU", "El chipset", "El BIOS/UEFI", "El disco duro"],
+                respuestaCorrecta: "El BIOS/UEFI"
+            },
+            {
+                pregunta: "¿Qué elemento es necesario para proteger una red inalámbrica de accesos no autorizados?",
+                opciones: ["Un repetidor de señal", "Una dirección IP estática", "Un cifrado (como WPA2/WPA3)", "Un cable Ethernet"],
+                respuestaCorrecta: "Un cifrado (como WPA2/WPA3)"
+            }
+        ];
+
+        const CANTIDAD_PREGUNTAS = 10;
+        let preguntasSeleccionadas = [];
+        let respuestasEstudiante = [];
+        let nombreEstudiante = "";
+
+        // --- Elementos del DOM ---
+        const inicioSeccion = document.getElementById('inicio-seccion');
+        const cuestionarioSeccion = document.getElementById('cuestionario-seccion');
+        const resultadosSeccion = document.getElementById('resultados-seccion');
+        const nombreInput = document.getElementById('nombre-estudiante');
+        const iniciarBtn = document.getElementById('iniciar-btn');
+        const finalizarBtn = document.getElementById('finalizar-btn');
+        const preguntasContainer = document.getElementById('preguntas-container');
+        const infoEstudiante = document.getElementById('info-estudiante');
+
+        // --- Funciones de Lógica ---
+
+        /**
+         * Selecciona un número aleatorio de preguntas del banco sin repetirlas.
+         */
+        function seleccionarPreguntas() {
+            // Clonar el banco para no modificar el original
+            let bancoTemporal = [...bancoDePreguntas];
+            preguntasSeleccionadas = [];
+            respuestasEstudiante = [];
+
+            // Selección aleatoria
+            for (let i = 0; i < CANTIDAD_PREGUNTAS; i++) {
+                if (bancoTemporal.length === 0) break; 
+
+                const indiceAleatorio = Math.floor(Math.random() * bancoTemporal.length);
+                const pregunta = bancoTemporal.splice(indiceAleatorio, 1)[0];
+                
+                // Barajar las opciones de respuesta de la pregunta
+                pregunta.opciones = pregunta.opciones.sort(() => Math.random() - 0.5);
+                
+                preguntasSeleccionadas.push(pregunta);
+                respuestasEstudiante.push(null); // Inicializar la respuesta del estudiante
+            }
+        }
+
+        /**
+         * Genera el HTML de las preguntas y lo inyecta en el contenedor.
+         */
+        function renderizarCuestionario() {
+            let html = '';
+            preguntasSeleccionadas.forEach((p, index) => {
+                html += `
+                    <div class="pregunta" id="pregunta-${index}">
+                        <p><i class="fas fa-question-circle"></i> Pregunta ${index + 1}: ${p.pregunta}</p>
+                `;
+                p.opciones.forEach((opcion) => {
+                    // Usar el índice de la pregunta como nombre del grupo de radio buttons
+                    // Sanitizar la opción para el valor del onclick
+                    const sanitizedOption = opcion.replace(/'/g, "\\'");
+                    html += `
+                        <label class="opcion">
+                            <input type="radio" name="pregunta${index}" value="${opcion}" data-index="${index}" onclick="guardarRespuesta(${index}, '${sanitizedOption}')">
+                            ${opcion}
+                        </label>
+                    `;
+                });
+                html += `</div>`;
+            });
+            preguntasContainer.innerHTML = html;
+            finalizarBtn.style.display = 'block'; // Mostrar el botón de finalizar
+        }
+
+        /**
+         * Guarda la respuesta seleccionada por el estudiante.
+         * @param {number} index El índice de la pregunta.
+         * @param {string} respuesta La respuesta seleccionada.
+         */
+        function guardarRespuesta(index, respuesta) {
+            respuestasEstudiante[index] = respuesta;
+            
+            // Verificar si todas las preguntas han sido respondidas para habilitar el botón
+            const todasRespondidas = respuestasEstudiante.every(r => r !== null);
+            finalizarBtn.disabled = !todasRespondidas;
+        }
+
+        /**
+         * Calcula la puntuación final y muestra los resultados.
+         */
+        function mostrarResultados() {
+            let aciertos = 0;
+            let detalleHTML = '';
+            
+            // 1. Ocultar secciones
+            cuestionarioSeccion.style.display = 'none';
+            
+            // 2. Calcular Puntuación y generar detalle
+            preguntasSeleccionadas.forEach((p, index) => {
+                const respuestaCorrecta = p.respuestaCorrecta;
+                const respuestaEstudiante = respuestasEstudiante[index];
+                const esCorrecta = respuestaEstudiante === respuestaCorrecta;
+
+                if (esCorrecta) {
+                    aciertos++;
+                }
+
+                // Generar detalle de la respuesta
+                detalleHTML += `
+                    <div class="detalle ${esCorrecta ? 'acertada' : 'fallida'}">
+                        <p><strong><i class="fas ${esCorrecta ? 'fa-check-circle' : 'fa-times-circle'}"></i> ${index + 1}. ${p.pregunta}</strong></p>
+                        <p>Tu respuesta: <span>${respuestaEstudiante || 'No respondida'}</span></p>
+                        ${!esCorrecta ? `<p class="respuesta-correcta">Respuesta Correcta: ${respuestaCorrecta}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            // 3. Inyectar Resultados en el DOM
+            document.getElementById('nombre-resultado').textContent = `${nombreEstudiante}, tu desempeño fue:`;
+            document.getElementById('puntuacion-final').innerHTML = `¡Tuviste <strong>${aciertos}</strong> aciertos y <strong>${CANTIDAD_PREGUNTAS - aciertos}</strong> errores!`;
+            document.getElementById('respuestas-detalle').innerHTML = detalleHTML;
+            
+            // 4. Mostrar sección de resultados
+            resultadosSeccion.style.display = 'block';
+        }
+
+        // --- Event Listeners (Controladores de Eventos) ---
+
+        // Habilitar el botón de inicio si hay un nombre
+        nombreInput.addEventListener('input', () => {
+            iniciarBtn.disabled = nombreInput.value.trim() === "";
+        });
+
+        // Iniciar el cuestionario
+        iniciarBtn.addEventListener('click', () => {
+            nombreEstudiante = nombreInput.value.trim();
+            if (!nombreEstudiante) {
+                alert("Por favor, ingresa tu nombre para iniciar.");
+                return;
+            }
+
+            // Ocultar inicio y preparar cuestionario
+            inicioSeccion.style.display = 'none';
+            cuestionarioSeccion.style.display = 'block';
+            infoEstudiante.innerHTML = `<i class="fas fa-user-circle"></i> Estudiante: <strong>${nombreEstudiante}</strong> | <i class="fas fa-list-ol"></i> Preguntas: ${CANTIDAD_PREGUNTAS}`;
+
+            // Seleccionar y renderizar preguntas
+            seleccionarPreguntas();
+            renderizarCuestionario();
+            
+            // Deshabilitar botón de finalizar hasta que todas estén respondidas
+            finalizarBtn.disabled = true; 
+        });
+
+        // Finalizar el cuestionario
+        finalizarBtn.addEventListener('click', () => {
+            if (confirm('¿Estás seguro/a de que deseas finalizar y ver tus resultados?')) {
+                mostrarResultados();
+            }
+        });
+    </script>
+</body>
+</html>
